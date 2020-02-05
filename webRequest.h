@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <string>
-#include "FastCGI/FastCGI.cc"
+#include "FastCGI/FastCGI.h"
 #include "TcpConnection.h"
 #include "TcpServer.h"
 #include "disCription.h"

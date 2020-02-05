@@ -1,9 +1,9 @@
 #include "EventLoop.h"
-#include "Channel.cc"
+#include "Channel.h"
 
 // __thread EventLoop* loopInThisThread = 0;
 
-#include "Poller.cc"
+#include "Poller.h"
 
 void EventLoop::loop() {
     assert(!looping_);

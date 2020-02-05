@@ -1,11 +1,7 @@
 #ifndef _EVENT_LOOP_H_
 #define _EVENT_LOOP_H_
-
-#include "currentThread.h"
-#include "Universal_head.h"
-#include "Channel.h"
+#include "modelHead.h"
 #include "Epoll.h"
-#include "Mutex.h"
 
 #include <sys/eventfd.h>
 
@@ -55,7 +51,6 @@ class EventLoop {
         typedef std::vector<Channel *> ChannelList;
         ChannelList activeChannels_;
        
-        std::unique_ptr <Channel> upchannel_;
         std::shared_ptr <_Poller::Poller> poller_;
         // void abortNotInLoopThread();
 

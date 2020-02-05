@@ -1,34 +1,22 @@
 #ifndef _TCP_CONNECTION_H_
 #define _TCP_CONNECTION_H_
-#include "Universal_head.h"
-#include "EventLoop.h"
+#include "modelHead.h"
 #include "Address.h"
-// #include "Socket.cc"
-#include "Channel.h"
-#include "Buffer.cc"
-#include "webResponse.h"
-// class Buffer;
+#include "Buffer.h"
+
+class webRequest;
+class Socket;
+class EventLoop;
+class Channel;
+
+using namespace std;
+
 class TcpConnection : 
             public boost::enable_shared_from_this<TcpConnection>
 {
     public:     
         TcpConnection(EventLoop *loop,const std::string name,int sockfd,
-                              const Address &localAddr,const Address &peerAddr) 
-                        :loop_(loop),
-                        reading_(false),
-                        name_(name),
-                        socket_(new Socket(sockfd)),
-                        channel_(new Channel(loop,sockfd)),
-                        localAddr_(localAddr),
-                        peerAddr_(peerAddr) 
-        {
-            channel_->setReadCallBack(
-                std::bind(&TcpConnection::handleRead,this));
-            channel_->setWriteCallBack(boost::bind(&TcpConnection::handWrite,this));
-            channel_->setCloseCallBack(boost::bind(&TcpConnection::handClose,this));
-            channel_->setErrCallBack(boost::bind(&TcpConnection::handClose,this));
-            channel_->setForceCloseCallBack(boost::bind(&TcpConnection::forceClose,this));
-        }
+                              const Address &localAddr,const Address &peerAddr);
         void setConnectionCallBack(ConnectionCallBack &cb) {
             connectionCallBack_ = cb;
         }
@@ -47,7 +35,7 @@ class TcpConnection :
         const boost::any& getContext() const {
             return context_;
         }
-        const string & getName() { return name_; }
+        const std::string & getName() { return name_; }
         bool isConnected() { return state_ == Connected; }
         bool isDisconnected() { return state_ == Disconnceted; }
         void send(const std::string& message);

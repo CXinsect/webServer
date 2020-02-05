@@ -52,7 +52,7 @@ void Server::onRequest(const TcpConnectionPtr& conn,
   Buffer* buffer_ = new Buffer;
   webResponse response_;
   response_.setHttpCodeStatus(status);
-  bool flags = response_.fileResponseAssembly(buffer_, fastcgi_);
+  bool flags = response_.fileResponseAssembly(buffer_);
   // std::cout << "Send Data: " << buffer_->retrieveAllAsString() << std::endl;
   
   do {

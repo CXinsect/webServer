@@ -1,6 +1,6 @@
 #ifndef __EPOLL_H_
 #define __EPOLL_H_
-#include "Universal_head.h"
+#include "modelHead.h"
 class Channel;
 class EventLoop;
 namespace _Poller {
@@ -31,5 +31,4 @@ namespace _Poller {
 
     };
 }
-#include "EventLoop.h"
 #endif

@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-// #include "FastCGI/FastCGI.cc"
+
 class disCription {
     public:
         enum Method { GET = 0,POST,HEAD,PUT };
@@ -25,9 +25,7 @@ class disCription {
         static std::string cgiReply_;
         const int BuffSize = 4096;
 };
-struct stat disCription::st_;
-std::string disCription::filename_ = std::string();
-std::string disCription::cgiReply_ = std::string();
+
 // std::string disCription::status_ = std::string();
 // std::string disCription::cgiContentType_ = std::string();
 // std::string  disCription::cgiContent_ = std::string();

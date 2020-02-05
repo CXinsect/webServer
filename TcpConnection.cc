@@ -1,5 +1,24 @@
 #include "TcpConnection.h"
+#include "Channel.h"
+#include "Socket.h"
 
+TcpConnection::TcpConnection(EventLoop *loop,const std::string name,int sockfd,
+                              const Address &localAddr,const Address &peerAddr) 
+                        :loop_(loop),
+                        reading_(false),
+                        name_(name),
+                        socket_(new Socket(sockfd)),
+                        channel_(new Channel(loop,sockfd)),
+                        localAddr_(localAddr),
+                        peerAddr_(peerAddr) 
+{
+    channel_->setReadCallBack(
+        std::bind(&TcpConnection::handleRead,this));
+    channel_->setWriteCallBack(boost::bind(&TcpConnection::handWrite,this));
+    channel_->setCloseCallBack(boost::bind(&TcpConnection::handClose,this));
+    channel_->setErrCallBack(boost::bind(&TcpConnection::handClose,this));
+    channel_->setForceCloseCallBack(boost::bind(&TcpConnection::forceClose,this));
+}
 void TcpConnection::handleRead() {
   std::cout << "TcpConnnection handleread" << std::endl;
   int n = static_cast<int>(inputBuffer_.readFd(channel_->getFd()));
@@ -8,12 +27,9 @@ void TcpConnection::handleRead() {
     messageCallBack_(shared_from_this(), &inputBuffer_);
   } else if (n == 0) {
     std::cout << "client is over" << std::endl;
-    setState(Disconnceted);
     handClose();
   } else {
     std::cout << "TcpConnection Error:: handRead" << std::endl;
-    // setState(Disconnceted);
-    // handClose();
   }
 }
 void TcpConnection::handWrite() {
@@ -28,7 +44,7 @@ void TcpConnection::handWrite() {
         channel_->disableWriteing();
         // busy Loop
         // loop_->quit
-        if (state_ == Disconnceted) Close();
+        // if (state_ == Disconnceted) Close();
       }
     }
   } else {
@@ -37,20 +53,21 @@ void TcpConnection::handWrite() {
 }
 void TcpConnection::handClose() {
   std::cout << "TcpConnection handclose " << channel_->getFd() << std::endl;
-  assert(state_ == Disconnceted);
+  assert(state_ == Connected);
+  setState(Disconnceted);
   // if(state_ == Connected) exit(0);
   channel_->disableAll();
   connectionCallBack_(shared_from_this());
 }
 void TcpConnection::forceClose () {
-   assert(state_ == Disconnceted);
+   assert(state_ == Connected);
    setState(Disconnceted);
    channel_->disableAll();
    channel_->remove();
   ::close(channel_->getFd());
 }
 void TcpConnection::connectionClose() {
-  assert(state_ == Disconnceted);
+  assert(state_ == Connected);
   channel_->disableAll();
   connectionCallBack_(shared_from_this());
   //update 2/4

@@ -2,9 +2,9 @@
 #define  _TCP_SERVER_H_
 #include "EventLoop.h"
 #include "Address.h"
-#include "Acceptor.cc"
-#include "Universal_head.h"
+#include "modelHead.h"
 class TcpConnection;
+class Acceptor;
 
 class TcpServer {
     public:

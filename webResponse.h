@@ -10,8 +10,11 @@
 #include "TcpConnection.h"
 #include "TcpServer.h"
 #include "disCription.h"
-#include "webRequest.h"
-// #include "FastCGI/FastCGI.h"
+// #include "webRequest.h"
+#include "FastCGI/FastCGI.h"
+
+using namespace std;
+
 const std::string Version = "HTTP/1.1";
 
 class webResponse : public disCription {
@@ -25,7 +28,7 @@ class webResponse : public disCription {
   // bool fileResponseWrite(const TcpConnectionPtr &conn_,Buffer*buffer_);
   void fileResponseAddHead(Buffer *buffer_, int length_);
   void fileResponseAddHead(Buffer *buffer_, std::string &cgiReply_);
-  bool fileResponseAssembly(Buffer *buffer_, FastCGI &fastcgi);
+  bool fileResponseAssembly(Buffer *buffer_);
   void setHttpCodeStatus(HttpCode &status) { httpcodestatus_ = status; }
   
   std::string getFileType();
@@ -40,19 +43,13 @@ class webResponse : public disCription {
   static int tail_;
 
  private:
-  webRequest request_;
-  // Buffer buffer_;
-  // TcpConnection conn_;
+  // webRequest request_;
   char buf_[64];
   HttpCode httpcodestatus_;
   std::string title_;
-  FastCGI fastcgi_;
   std::string cgiStatus_;
   std::string cgiContentType_;
   std::string cgiContent_;
 };
-char *webResponse::fileAddr = NULL;
-char *webResponse::flagsAddr = NULL;
-int webResponse::count_ = 0;
-int webResponse::tail_ = 0;
+
 #endif

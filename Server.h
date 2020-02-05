@@ -1,15 +1,15 @@
 #ifndef _SERVER_H_
 #define _SERVER_H_
 #include <iostream>
-#include "Address.cc"
-#include "EventLoop.cc"
-#include "SocketOpts.cc"
-#include "TcpConnection.cc"
-#include "TcpServer.cc"
-#include "Universal_head.h"
+#include "Address.h"
+#include "EventLoop.h"
+#include "SocketOpts.h"
+#include "TcpConnection.h"
+#include "TcpServer.h"
+#include "modelHead.h"
 #include "disCription.h"
-#include "webRequest.cc"
-#include "webResponse.cc"
+#include "webRequest.h"
+#include "webResponse.h"
 class Server {
  public:
   typedef std::function<void(const webRequest &)> webCallBack;

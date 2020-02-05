@@ -1,11 +1,12 @@
 #ifndef _POLLER_H_
 #define _POLLER_H_
 
-#include "Universal_head.h"
+#include "modelHead.h"
 #include "EventLoop.h"
 class Channel;
 struct pollfd;
 class EventLoop;
+
 class Poller {
     public:
         typedef std::vector <Channel *> ChannelList;
@@ -14,7 +15,7 @@ class Poller {
          ~Poller();
         void poll(int timeout,ChannelList *activeChannels);
         void updateChannel(Channel *channel);
-        static Poller * newDefaultPoller(EventLoop * loop);
+        // static Poller * newDefaultPoller(EventLoop * loop);
         void setEventLoop(EventLoop *loop) { owerLoop_ = loop;}
         void removeChannel(Channel *channel);
         
@@ -28,9 +29,4 @@ class Poller {
         PollList pollfds_;
 
 };
-Poller p;
-Poller * Poller::newDefaultPoller(EventLoop * loop) {
-            p.owerLoop_ = loop;
-            return &p;
-}
 #endif

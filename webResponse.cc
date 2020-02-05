@@ -1,4 +1,12 @@
 #include "webResponse.h"
+struct stat disCription::st_;
+std::string disCription::filename_ = std::string();
+std::string disCription::cgiReply_ = std::string();
+
+char *webResponse::fileAddr = NULL;
+char *webResponse::flagsAddr = NULL;
+int webResponse::count_ = 0;
+int webResponse::tail_ = 0;
 
 void webResponse::fileResponseAddHead(Buffer *buffer_, int length_) {
   std::cout << "hello" << std::endl;
@@ -49,7 +57,7 @@ void webResponse::fileResponseAddHead(Buffer *buffer_, std::string &cgiReply_) {
     buffer_->Append(buf_, strlen(buf_));
   }
 }
-bool webResponse::fileResponseAssembly(Buffer *buffer_, FastCGI &fastcgi) {
+bool webResponse::fileResponseAssembly(Buffer *buffer_) {
   std::cout << "fileresponse " << std::endl;
   // fastcgi_ = fastcgi;
   switch (httpcodestatus_) {

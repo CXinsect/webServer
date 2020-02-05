@@ -2,6 +2,7 @@
 #include "SocketOpts.h"
 #include "Address.h"
 #include "TcpConnection.h"
+#include "Acceptor.h"
 
 void defaultConnectionCallback(const TcpConnectionPtr& conn) {
     std::cout << "Connected" << std::endl;

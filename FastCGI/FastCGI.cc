@@ -1,5 +1,5 @@
 #include "/home/insect/code/NetWork/webserver/FastCGI/FastCGI.h"
-#include ".././Universal_head.h"
+#include ".././modelHead.h"
 #include<iostream>
 
 static const int PARAMS_BUFF_LEN = 2048;   //环境参数buffer的大小

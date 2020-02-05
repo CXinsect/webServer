@@ -1,4 +1,4 @@
-#include "Server.cc"
+#include "Server.h"
 
 int main (void) {
     EventLoop loop;

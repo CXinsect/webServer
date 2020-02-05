@@ -1,5 +1,5 @@
-#ifndef UNIVERSAL__HEAD__
-#define UNIVERSAL__HEAD__
+#ifndef _MODEL_HEAD_H_
+#define _MODEL_HEAD_H_
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>

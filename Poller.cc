@@ -1,11 +1,6 @@
 #include "Poller.h"
 #include "Channel.h"
 
-// Poller * newDefaultPoller(EventLoop * loop) {
-//     Poller *p;
-//     p->setEventLoop(loop);
-//     return p;
-// }
 Poller::Poller(EventLoop *loop) : owerLoop_(loop) {}
 
 Poller::~Poller() {std::cout << "ddd" << std::endl;};

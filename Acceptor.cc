@@ -1,5 +1,10 @@
 #include "Acceptor.h"
-#include "Socket.cc"
+
+#include "SocketOpts.h"
+#include "Address.h"
+
+#include "EventLoop.h"
+
 using namespace sockets;
 
 Acceptor::Acceptor(EventLoop* loop, const Address& listenAddr)
