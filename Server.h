@@ -12,25 +12,34 @@
 #include "disCription.h"
 #include "webRequest.h"
 #include "webResponse.h"
+// #include "threadPool.h"
+class ThreadPool;
+// class Task;
 
 class Server {
  public:
   typedef std::function<void(const webRequest &)> webCallBack;
 
   Server(EventLoop *loop, const Address &addr, const string &name,int Time);
-
+  ~Server();
   void setCallBack(const webCallBack &cb) { webcallback_ = cb; }
   void start() { server_.start(); }
-
+  void Run();
  private:
   void onConnection(const TcpConnectionPtr &conn);
   void onMessage(const TcpConnectionPtr &conn, Buffer *buf);
   void onRequest(const TcpConnectionPtr &, disCription::HttpCode &status,
                  FastCGI &fastcgi_);
+  private:
+    void ThreadFunc(const TcpConnectionPtr& conn);
+    void setBuffer(Buffer* buffer) {  buffer_ = buffer; }
   TcpServer server_;
   webCallBack webcallback_;
   EventLoop *loop_;
   FastCGI fastcgi_;
+  ThreadPool* pool_;
+  Buffer* buffer_;
+  TcpConnectionPtr conn_;
 
   void onTime() {
     connectionBuckets_.push_back(bucket_());

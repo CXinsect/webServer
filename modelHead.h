@@ -37,7 +37,7 @@ typedef std::function<void(const TcpConnectionPtr&, Buffer* buf)>
 
 typedef std::function<void(const TcpConnectionPtr&)> CloseCallBack;
 typedef std::function<void(const TcpConnectionPtr&)> WriteCompleteCallback;
-
+typedef std::function<void(const TcpConnectionPtr&)> threadFuncCallBack;
 extern void defaultConnectionCallback(const TcpConnectionPtr& conn);
 // {
 //   std::cout << "Connected" << std::endl;

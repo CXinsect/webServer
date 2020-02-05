@@ -4,6 +4,8 @@
 // __thread EventLoop* loopInThisThread = 0;
 
 #include "Poller.h"
+#include <thread>
+using namespace std;
 
 void EventLoop::loop() {
     assert(!looping_);
@@ -11,6 +13,7 @@ void EventLoop::loop() {
     quit_ = false;
     while(!quit_) {
         std::cout << "Loop" << std::endl;
+        cout << "Main" << this_thread::get_id() << endl;
         activeChannels_.clear();
         poller_->poll(&activeChannels_,-1);
         eventHanding_ = true;
