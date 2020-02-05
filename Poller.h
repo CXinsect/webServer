@@ -15,8 +15,6 @@ class Poller {
          ~Poller();
         void poll(int timeout,ChannelList *activeChannels);
         void updateChannel(Channel *channel);
-        // static Poller * newDefaultPoller(EventLoop * loop);
-        void setEventLoop(EventLoop *loop) { owerLoop_ = loop;}
         void removeChannel(Channel *channel);
         
     private:
@@ -25,7 +23,6 @@ class Poller {
         typedef std::map<int,Channel *> ChannelMap;
         typedef std::vector <struct pollfd> PollList;
         ChannelMap channels_;
-        EventLoop *owerLoop_;
         PollList pollfds_;
 
 };

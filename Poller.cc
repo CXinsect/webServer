@@ -1,9 +1,9 @@
 #include "Poller.h"
 #include "Channel.h"
 
-Poller::Poller(EventLoop *loop) : owerLoop_(loop) {}
+Poller::Poller(EventLoop *loop) {}
 
-Poller::~Poller() {std::cout << "ddd" << std::endl;};
+Poller::~Poller() {};
 
 void Poller::poll(int timeoutMs,ChannelList *activeChannels) {
     std::cout << "Comming in Poll" << std::endl;
@@ -56,7 +56,6 @@ void Poller::updateChannel(Channel *channel) {
         
     }
     else {
-        //否则则更新描述符信息
         std::cout << "update exist Channel " << std::endl;
         assert(channels_.find(channel->getFd()) != channels_.end());
         assert(channels_[channel->getFd()] == channel);
@@ -69,7 +68,6 @@ void Poller::updateChannel(Channel *channel) {
         if(channel->isNoneEvent()) {
             pfd.fd = -channel->getFd()-1;
         }
-            // pfd.fd = -1; 
     }
 }
 void Poller::removeChannel(Channel *channel) {
@@ -80,11 +78,10 @@ void Poller::removeChannel(Channel *channel) {
     int id = channel->getIndex();
     assert(id >= 0 && id < static_cast<int>(pollfds_.size()));
     const struct pollfd &pfd = pollfds_[id];
-    // std::cout << "Poller::remove" << channel->getFd() << channel->getEvents() << std::endl;
     assert(pfd.fd == -channel->getFd()-1 && pfd.events == channel->getEvents());
     size_t n = channels_.erase(channel->getFd());
     assert(n == 1);
-    if(boost::implicit_cast<size_t>(id) == pollfds_.size()-1) {
+    if(static_cast<size_t>(id) == pollfds_.size()-1) {
         pollfds_.pop_back();
     }
     else {

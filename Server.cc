@@ -1,15 +1,15 @@
 #include "Server.h"
 #include <functional>
 #include <iostream>
-const std::_Placeholder<1> std::placeholders::_1;
-const std::_Placeholder<2> std::placeholders::_2;
 
+using namespace placeholders;
+using namespace std;
 Server::Server(EventLoop* loop, const Address& listenAddr, const string& name,int timeSeconds)
     : server_(loop, listenAddr, name), loop_(loop), connectionBuckets_(timeSeconds) {
       
   fastcgi_.FastCgi_init();
-  server_.setConnectionCallBack(boost::bind(&Server::onConnection, this, _1));
-  server_.setMessageCallBack(boost::bind(&Server::onMessage, this, _1, _2));
+  server_.setConnectionCallBack(std::bind(&Server::onConnection,this , _1));
+  server_.setMessageCallBack(std::bind(&Server::onMessage, this, _1, _2));
   //过期时间处理函数
   connectionBuckets_.resize(timeSeconds);
 }
@@ -49,20 +49,15 @@ void Server::onMessage(const TcpConnectionPtr& conn, Buffer* buf) {
 
 void Server::onRequest(const TcpConnectionPtr& conn,
                        disCription::HttpCode& status, FastCGI& fastcgi_) {
-  Buffer* buffer_ = new Buffer;
+  unique_ptr<Buffer> buffer_(new Buffer);
   webResponse response_;
   response_.setHttpCodeStatus(status);
   bool flags = response_.fileResponseAssembly(buffer_);
-  // std::cout << "Send Data: " << buffer_->retrieveAllAsString() << std::endl;
-  
   do {
       if(!flags) {
-          std::cout << "<<<<<flags error" << std::endl;
-          conn->connectionClose();
+          conn->handClose();
           break;
       }
-        conn->send(buffer_);
+        conn->send(buffer_->retrieveAllAsString());
   }while(0);
-
-//   conn->connectionClose();
 }

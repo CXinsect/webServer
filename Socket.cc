@@ -9,11 +9,18 @@ void Socket::bindAddress(const Address &addr) {
 void Socket::listen() {
     sockets::Listen(sockfd);
 }
-int Socket::accept(Address *peeraddr) {
+void Socket::accept(Address *peeraddr,vector<int>& v) {
     struct sockaddr_in addr;
     memset(&addr,0,sizeof(addr));
-    int confd = sockets::accept(sockfd,&addr);
-    return confd;
+    while(true) {
+        int confd = sockets::accept(sockfd,&addr);
+        if(confd < 0) {
+            if(errno == EAGAIN || errno == EWOULDBLOCK) break;
+            else ::close(confd);
+        }
+        v.push_back(confd);
+    }
+    return;
 }
 
 void Socket::Close() {

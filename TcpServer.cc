@@ -3,6 +3,7 @@
 #include "Address.h"
 #include "TcpConnection.h"
 #include "Acceptor.h"
+using namespace placeholders;
 
 void defaultConnectionCallback(const TcpConnectionPtr& conn) {
     std::cout << "Connected" << std::endl;
@@ -23,7 +24,7 @@ TcpServer::TcpServer(EventLoop* loop,
     nextConfd_(1)
 {
     acceptor_->setNewConnectionCallBack(
-        boost::bind(&TcpServer::newConnection,this,_1,_2));
+        std::bind(&TcpServer::newConnection,this,_1,_2));
 }
 void TcpServer::newConnection (int sockfd,const Address& peerAddr) {
     char buf[32];
@@ -38,7 +39,7 @@ void TcpServer::newConnection (int sockfd,const Address& peerAddr) {
     connection_[name] = conn;
     conn->setConnectionCallBack(connectionBack_);
     conn->setMessageCallBack(messageBack_);
-    conn->setCloseCallBack(boost::bind(&TcpServer::removeConnection, this, _1));
+    conn->setCloseCallBack(std::bind(&TcpServer::removeConnection, this, _1));
     conn->connectEstablished();
 }
 void TcpServer::removeConnection(const TcpConnectionPtr &conn) {
@@ -46,16 +47,16 @@ void TcpServer::removeConnection(const TcpConnectionPtr &conn) {
 
     size_t n = connection_.erase(conn->getName());
     assert(n == 1);
-    conn->connectionClose();
+    conn->handClose();
 }
 void TcpServer::start() {
-    loop_->runInLoop(std::bind(&Acceptor::Listen,acceptor_.get()));
+    acceptor_->Listen();
 }
 TcpServer::~TcpServer() {
     std::cout << "TcpServer close: " << name_ << std::endl;
     for(auto&item : connection_) {
         TcpConnectionPtr conn(item.second);
         item.second.reset();
-        conn->connectionClose();
+        conn->handClose();
     }
 }

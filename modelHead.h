@@ -12,31 +12,24 @@
 #include <sys/epoll.h>
 #include <sys/socket.h>
 #include <sys/time.h>
-#include <sys/types.h> /* See NOTES */
+#include <sys/types.h>
 #include <sys/types.h>
 #include <sys/uio.h>
 #include <unistd.h>
 
 #include <assert.h>
 #include <boost/any.hpp>
-#include <boost/bind.hpp>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/implicit_cast.hpp>
-#include <boost/is_placeholder.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/circular_buffer.hpp>
-#include <boost/unordered_set.hpp>
 #include <iostream>
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
+#include <functional>
 
 class TcpConnection;
 class Buffer;
-typedef boost::shared_ptr<TcpConnection> TcpConnectionPtr;
+typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;
 
 typedef std::function<void(const TcpConnectionPtr&)> ConnectionCallBack;
 typedef std::function<void(const TcpConnectionPtr&, Buffer* buf)>

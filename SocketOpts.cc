@@ -27,10 +27,10 @@ void sockets::Listen(int sockfd) {
 }
 int sockets::accept(int sockfd,struct sockaddr_in *addr) {
     socklen_t addrlen = static_cast <socklen_t>(sizeof(*addr));
-    struct sockaddr * addr4 = static_cast <struct sockaddr *>(boost::implicit_cast<void*>(addr));
+    struct sockaddr * addr4 = static_cast <struct sockaddr *>(static_cast<void*>(addr));
     int confd = ::accept4(sockfd,addr4,&addrlen,SOCK_NONBLOCK | SOCK_CLOEXEC);
     if(confd < 0) {
-          std::cout << "[Accept Err]" << " " << __LINE__ << std::endl;
+          std::cout << "[Accept Err]" << " " << __LINE__ << strerror(errno) << std::endl;
         int Errno = errno;
         switch(Errno) {
             case EAGAIN: 
@@ -67,7 +67,7 @@ void sockets::close(int sockfd) {
 void sockets::toIpPort(char *buf,size_t size,const struct sockaddr *addr) {
     toIp(buf,size,addr);
     size_t end = ::strlen(buf);
-    const struct sockaddr_in *addr1 = static_cast <const struct sockaddr_in *>(boost::implicit_cast<const void*>(addr));
+    const struct sockaddr_in *addr1 = static_cast <const struct sockaddr_in *>(static_cast<const void*>(addr));
     short port = ntohs(addr1->sin_port);
     //判断缓冲区大是否足够
     assert(size > end);
@@ -77,7 +77,7 @@ void sockets::toIpPort(char *buf,size_t size,const struct sockaddr *addr) {
 //打印ip
 void sockets::toIp(char *buf,size_t size,const struct sockaddr *addr) {
    assert(size >= INET_ADDRSTRLEN);
-   const struct sockaddr_in *addr1 = static_cast <const struct sockaddr_in *>(boost::implicit_cast <const void*>(addr));
+   const struct sockaddr_in *addr1 = static_cast <const struct sockaddr_in *>(static_cast <const void*>(addr));
    ::inet_ntop(AF_INET,&addr1->sin_addr,buf,static_cast<socklen_t>(size));
 }
 void sockets::fromIpPort(const char *ip,short port,struct sockaddr_in *addr) {
@@ -96,7 +96,7 @@ int sockets::getSocketError(int sockfd) {
         return optval;
 }
 struct sockaddr * sockets::sockaddr_tran(struct sockaddr_in *addr) {
-    struct sockaddr *addr_ = static_cast<struct sockaddr *>(boost::implicit_cast<void*>(addr));
+    struct sockaddr *addr_ = static_cast<struct sockaddr *>(static_cast<void*>(addr));
     return addr_;
 }
 struct sockaddr_in sockets::getLocalAddr(int sockfd) {

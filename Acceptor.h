@@ -1,13 +1,15 @@
 #ifndef _ACCEPTOR_H_
 #define _ACCEPTOR_H_
 #include <functional>
-
+#include <atomic>
 class EventLoop;
 class Address;
 class Socket;
 class Channel;
 #include "Socket.h"
 #include "Channel.h"
+
+using namespace std;
 
 class Acceptor {
     public:
@@ -27,5 +29,6 @@ class Acceptor {
         NewConnectionCallBack newConnectionBack_;
         bool listening_;
         int conn_;
+        std::atomic<int> clientCount_;
 };
 #endif

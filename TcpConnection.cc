@@ -14,10 +14,9 @@ TcpConnection::TcpConnection(EventLoop *loop,const std::string name,int sockfd,
 {
     channel_->setReadCallBack(
         std::bind(&TcpConnection::handleRead,this));
-    channel_->setWriteCallBack(boost::bind(&TcpConnection::handWrite,this));
-    channel_->setCloseCallBack(boost::bind(&TcpConnection::handClose,this));
-    channel_->setErrCallBack(boost::bind(&TcpConnection::handClose,this));
-    channel_->setForceCloseCallBack(boost::bind(&TcpConnection::forceClose,this));
+    channel_->setWriteCallBack(std::bind(&TcpConnection::handWrite,this));
+    channel_->setCloseCallBack(std::bind(&TcpConnection::handClose,this));
+    channel_->setErrCallBack(std::bind(&TcpConnection::handClose,this));
 }
 void TcpConnection::handleRead() {
   std::cout << "TcpConnnection handleread" << std::endl;
@@ -58,20 +57,8 @@ void TcpConnection::handClose() {
   // if(state_ == Connected) exit(0);
   channel_->disableAll();
   connectionCallBack_(shared_from_this());
-}
-void TcpConnection::forceClose () {
-   assert(state_ == Connected);
-   setState(Disconnceted);
-   channel_->disableAll();
-   channel_->remove();
-  ::close(channel_->getFd());
-}
-void TcpConnection::connectionClose() {
-  assert(state_ == Connected);
-  channel_->disableAll();
-  connectionCallBack_(shared_from_this());
-  //update 2/4
   channel_->remove();
+  close(channel_->getFd());
 }
 void TcpConnection::send(const std::string& message) {
   if (state_ == Connected) {
@@ -89,7 +76,7 @@ void TcpConnection::sendInLoop(const std::string& message) {
   if (!channel_->isWriteing() && outputBuffer_.getReadableBytes() == 0) {
     nwrite = ::write(channel_->getFd(), message.c_str(), message.size());
     if (nwrite >= 0) {
-      if (boost::implicit_cast<size_t>(nwrite) < message.size()) {
+      if (static_cast<size_t>(nwrite) < message.size()) {
         std::cout << "More Datas are going to be Writen" << std::endl;
       }
     } else {
@@ -100,7 +87,7 @@ void TcpConnection::sendInLoop(const std::string& message) {
     }
   }
   assert(nwrite >= 0);
-  if (boost::implicit_cast<size_t>(nwrite) < message.size()) {
+  if (static_cast<size_t>(nwrite) < message.size()) {
     outputBuffer_.Append(message.c_str() + nwrite, message.size() - nwrite);
     if (!channel_->isWriteing()) {
       channel_->enableWriteing();

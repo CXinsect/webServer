@@ -1,6 +1,8 @@
 #ifndef _SERVER_H_
 #define _SERVER_H_
 #include <iostream>
+#include <unordered_set>
+#include <memory>
 #include "Address.h"
 #include "EventLoop.h"
 #include "SocketOpts.h"
@@ -10,6 +12,7 @@
 #include "disCription.h"
 #include "webRequest.h"
 #include "webResponse.h"
+
 class Server {
  public:
   typedef std::function<void(const webRequest &)> webCallBack;
@@ -32,7 +35,7 @@ class Server {
   void onTime() {
     connectionBuckets_.push_back(bucket_());
   }
-  typedef boost::weak_ptr<TcpConnection> weakTcpConnectionPtr_;
+  typedef std::weak_ptr<TcpConnection> weakTcpConnectionPtr_;
 
   class Entry {
     public:
@@ -47,12 +50,11 @@ class Server {
       weakTcpConnectionPtr_ weakConnection_;
   };
   public:
-    typedef boost::shared_ptr<Entry> entryPtr_;
-    typedef boost::weak_ptr<Entry> entryWeakPtr_;
-    typedef boost::unordered_set<entryPtr_> bucket_;
+    typedef std::shared_ptr<Entry> entryPtr_;
+    typedef std::weak_ptr<Entry> entryWeakPtr_;
+    typedef std::unordered_set<entryPtr_> bucket_;
     typedef boost::circular_buffer<bucket_> connectionWeakList_;
     connectionWeakList_ connectionBuckets_;
-
 };
 
 #endif

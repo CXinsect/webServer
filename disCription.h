@@ -25,8 +25,4 @@ class disCription {
         static std::string cgiReply_;
         const int BuffSize = 4096;
 };
-
-// std::string disCription::status_ = std::string();
-// std::string disCription::cgiContentType_ = std::string();
-// std::string  disCription::cgiContent_ = std::string();
 #endif

@@ -23,7 +23,6 @@ class TcpServer {
     void SetCloseCallBack(const CloseCallBack& cb) {
         closeCallBack_ = cb;
     }
-    // void removeConnection(const TcpConnectionPtr& conn);
     
     private:
         void removeConnection(const TcpConnectionPtr& conn);
@@ -34,7 +33,7 @@ class TcpServer {
         const std::string name_;
         bool started_;
         int nextConfd_;
-        boost::scoped_ptr <Acceptor> acceptor_;
+        std::unique_ptr <Acceptor> acceptor_;
         ConnectionCallBack connectionBack_;
         MessageCallBack messageBack_;
         CloseCallBack closeCallBack_;

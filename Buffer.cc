@@ -24,7 +24,7 @@ ssize_t Buffer::readFd (int fd) {
     if(static_cast<int>(n) < 0) {
         std::cout << "Buffer::readFd: "<< __LINE__ << std::endl;
     }
-    else if(boost::implicit_cast<size_t>(n) <= writeAble) {
+    else if(static_cast<size_t>(n) <= writeAble) {
         writeIndex_ += n;
     }
     else {

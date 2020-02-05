@@ -25,10 +25,9 @@ class webResponse : public disCription {
   const std::string _404 = "Not Found";
   const std::string _500 = "Internal Error";
   HttpCode requestAction(void);
-  // bool fileResponseWrite(const TcpConnectionPtr &conn_,Buffer*buffer_);
-  void fileResponseAddHead(Buffer *buffer_, int length_);
-  void fileResponseAddHead(Buffer *buffer_, std::string &cgiReply_);
-  bool fileResponseAssembly(Buffer *buffer_);
+  void fileResponseAddHead(unique_ptr<Buffer>&buffer_, int length_);
+  void fileResponseAddHead(unique_ptr<Buffer>&buffer_, std::string &cgiReply_);
+  bool fileResponseAssembly(unique_ptr<Buffer>&buffer_);
   void setHttpCodeStatus(HttpCode &status) { httpcodestatus_ = status; }
   
   std::string getFileType();

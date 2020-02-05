@@ -43,7 +43,6 @@ class webRequest : public disCription {
   int checkIndex_;
   int startLine_;
   CheckState checkstate_;
-  // std::string fileName_;
   std::string host_;
   int messageLength_;
   int contentLength_;

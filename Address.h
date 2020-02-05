@@ -1,9 +1,6 @@
 #ifndef ADDRESS__H__
 #define ADDRESS__H__
 #include <sys/socket.h>
-
-#include <boost/noncopyable.hpp>
-#include <boost/implicit_cast.hpp>
 #include <string>
 #include <netinet/in.h>
 class Address {
@@ -14,7 +11,7 @@ class Address {
                         addr_(addr) {}
         //  sa_family_t family () const { return addr_.sin_family; }
         const struct sockaddr* getSockAddr () const {
-            const struct sockaddr * addr4 = static_cast <const struct sockaddr*>(boost::implicit_cast<const void*>(&addr_));
+            const struct sockaddr * addr4 = static_cast <const struct sockaddr*>(static_cast<const void*>(&addr_));
             return addr4;
         }
         std::string toIp () const;

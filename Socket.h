@@ -4,7 +4,7 @@
 using namespace std;
 class Address;
 
-class Socket : boost::noncopyable {
+class Socket {
     public:
         // Socket() {}
         explicit Socket(int sockfd_) : sockfd (sockfd_) {}
@@ -12,7 +12,7 @@ class Socket : boost::noncopyable {
         int getSockfd (void) { return sockfd; }
         void bindAddress (const Address & localAddr);
         void listen();
-        int accept(Address *peerAddress);
+        void accept(Address *peerAddress,vector<int>& v);
         void Close();
         void setReusePort(bool on);
         void setReuseAddr(bool on);

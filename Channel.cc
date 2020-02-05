@@ -11,15 +11,15 @@ Channel::Channel(EventLoop* loop, int fd)
       events_(0),
       revents_(0),
       index_(-1),
-      eventHanding_(false),
-      tied_(false) {}
+      eventHanding_(false)
+{
+}
 
 void Channel::update(void) { loop_->updateChannel(this); }
 
 void Channel::handleEvent() {
       if ((revents_ & EPOLLHUP) && !(revents_ & EPOLLIN)) {
-        std::cout << "Channel::handleEvent() POLLHUP" << std::endl;
-        if (forceCallBack_) forceCallBack_();
+        if (forceCallBack_) closeCallBack_();
       }
       if (revents_& EPOLLERR)
         if (errCallBack_) closeCallBack_();

@@ -8,7 +8,7 @@ char *webResponse::flagsAddr = NULL;
 int webResponse::count_ = 0;
 int webResponse::tail_ = 0;
 
-void webResponse::fileResponseAddHead(Buffer *buffer_, int length_) {
+void webResponse::fileResponseAddHead(unique_ptr<Buffer>&buffer_, int length_) {
   std::cout << "hello" << std::endl;
   memset(buf_, 0, sizeof(buf_));
   snprintf(buf_, sizeof(buf_), "Content-Type: %s\r\n", getFileType().c_str());
@@ -24,9 +24,8 @@ void webResponse::fileResponseAddHead(Buffer *buffer_, int length_) {
   memset(buf_, 0, sizeof(buf_));
   snprintf(buf_, sizeof(buf_), "\r\n");
   buffer_->Append(buf_, strlen(buf_));
-  // buffer_.Append(fileAddr,strlen(fileAddr));
 }
-void webResponse::fileResponseAddHead(Buffer *buffer_, std::string &cgiReply_) {
+void webResponse::fileResponseAddHead(unique_ptr<Buffer>&buffer_, std::string &cgiReply_) {
   int position;
   memset(buf_, 0, sizeof(buf_));
   if ((position = cgiReply_.find("Status:")) != std::string::npos) {
@@ -57,9 +56,8 @@ void webResponse::fileResponseAddHead(Buffer *buffer_, std::string &cgiReply_) {
     buffer_->Append(buf_, strlen(buf_));
   }
 }
-bool webResponse::fileResponseAssembly(Buffer *buffer_) {
+bool webResponse::fileResponseAssembly(unique_ptr<Buffer>&buffer_) {
   std::cout << "fileresponse " << std::endl;
-  // fastcgi_ = fastcgi;
   switch (httpcodestatus_) {
     case InternalError: {
       memset(buf_, 0, sizeof(buf_));
@@ -118,16 +116,7 @@ bool webResponse::fileResponseAssembly(Buffer *buffer_) {
         if (st_.st_size != 0) {
           fileResponseAddHead(buffer_, st_.st_size);
           int n = 0;
-          // while(n < count_) {
-          //     std::cout << "filesize--: " << strlen(fileAddr) << "content" <<
-          //     fileAddr << std::endl; buffer_->Append(fileAddr,st_.st_size);
-          //     n++;
-          //     if(n >= count_)
-          //         break;
-          //     fileAddr += BuffSize;
-          // }
           std::string tmp(fileAddr, st_.st_size);
-          std::cout << "file page ===>>> " << st_.st_size << std::endl;
           buffer_->Append(tmp.c_str(), tmp.size());
           st_.st_size = 0;
         } else {
@@ -146,8 +135,6 @@ bool webResponse::fileResponseAssembly(Buffer *buffer_) {
 }
 std::string webResponse::getFileType() {
   const char *dot;
-
-  // 自右向左查找‘.’字符, 如不存在返回NULL
   dot = strrchr(filename_.c_str(), '.');
   if (dot == NULL) return "text/plain; charset=utf-8";
   if (strcmp(dot, ".html") == 0 || strcmp(dot, ".htm") == 0)

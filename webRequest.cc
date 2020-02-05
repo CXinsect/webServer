@@ -1,5 +1,6 @@
 #include "webRequest.h"
 class FastCGI;
+
 webRequest::LineStatus webRequest::parseLine() {
   char temp;
   checkIndex_ = buffer_.getDateBegin(-1);
@@ -8,7 +9,6 @@ webRequest::LineStatus webRequest::parseLine() {
   messageLength_ = requeseBuffer_.size() + 1;
   for (; checkIndex_ < messageLength_; checkIndex_++) {
     temp = requeseBuffer_[checkIndex_];
-    std::cout << "temp: " << temp << std::endl;
     if (temp == '\r') {
       if (checkIndex_ + 1 == messageLength_)
         return LineStatusOpen;
@@ -49,16 +49,12 @@ webRequest::HttpCode webRequest::parseRequestLine(std::string& text) {
   url_ = url_.substr(0, pos2);
   cgiUrl_ = url_;
   if (url_.size() == 0) return BadRequest;
-  std::cout << "webRequest::url " << url_ << std::endl;
-  // int pos3 = version_.find_first_of(" \t");
   version_ = version_.substr(0, 8);
   text = text.substr(8 + 2, text.size());
-  std::cout << "webRequest::version " << version_ << std::endl;
   if (version_.size() == 0) return BadRequest;
   if (version_ != "HTTP/1.1") return BadRequest;
   if (strncasecmp(url_.c_str(), "http://", 7) == 0) {
     url_ = url_.substr(6, url_.size());
-    std::cout << "url :" << url_[0] << std::endl;
   }
   if (url_.size() == 0) return BadRequest;
   checkstate_ = CheckStateHeader;
@@ -66,7 +62,6 @@ webRequest::HttpCode webRequest::parseRequestLine(std::string& text) {
   return NoRequest;
 }
 webRequest::HttpCode webRequest::parseHeader(std::string& text) {
-  std::cout << "webrequestL::parseHeader " << std::endl;
   int position;
   if (text[0] == '0') {
     if (contentLength_ != 0) {
@@ -100,7 +95,6 @@ webRequest::HttpCode webRequest::parseHeader(std::string& text) {
     int pos = text.find_first_not_of(' ');
     std::string tmpcontent = text.substr(pos, pos + 9);
     text = text.substr(pos + 12, text.size());
-    std::cout << "Request::Connection: " << tmpcontent << std::endl;
     if (strcasecmp(tmpcontent.c_str(), "keep-alive") == 0) link_ = true;
   } else {
     std::cout << "Temporarily unprocessed" << std::endl;
@@ -110,14 +104,12 @@ webRequest::HttpCode webRequest::parseHeader(std::string& text) {
 }
 webRequest::HttpCode webRequest::parseContext(std::string& text) {
   if (buffer_.getReadableBytes() == 0) {
-    //处理body
     std::cout << "处理body" << std::endl;
     int pos = text.find_last_of('\n');
     postContent_ = text.substr(pos + 1, text.size());
     //默认采取禁止访问暂取消验证
     // if(postContent_.size() != 0)
     return GetRequest;
-    // return ForbidenRequest;
   }
   return NoRequest;
 }
@@ -171,8 +163,6 @@ webRequest::HttpCode webRequest::requestAction() {
     std::cout << "FastCGI has been sent " << cgiGetMessage_ << std::endl;
     return FileRequest;
   }
-  std::cout << "Default File Path: " << filePath << std::endl;
-  // struct stat st;
   if (stat(filePath.c_str(), &st_) < 0) return NoResource;
   if (!(st_.st_mode & S_IROTH)) return ForbidenRequest;
   if (S_ISDIR(st_.st_mode)) {
@@ -181,42 +171,10 @@ webRequest::HttpCode webRequest::requestAction() {
   }
   int fd = open(filePath.c_str(), O_RDONLY);
   assert(fd != -1);
-  // ssize_t length = st_.st_size;
-  // int offset = BuffSize;
-  // webResponse::fileAddr = webResponse::flagsAddr =
-  // (char*)mmap(NULL,BuffSize,PROT_READ,MAP_PRIVATE,fd,offset);
-  // assert(webResponse::fileAddr != MAP_FAILED);
-  // webResponse::count_++;
-  // length -= BuffSize;
-  // long sum = BuffSize;
-  // while(length > 0) {
-  //     if(length > 0 && length < BuffSize) {
-  //         webResponse::count_++;
-  //         webResponse::tail_ = length;
-  //         webResponse::flagsAddr += BuffSize;
-  //         webResponse::flagsAddr =
-  //         (char*)mmap(webResponse::flagsAddr,length,PROT_READ,MAP_PRIVATE,fd,offset);
-  //         offset += length;
-  //         sum += webResponse::tail_;
-  //         std::cout << "sum:---------" << sum << std::endl;
-  //         break;
-  //     }
-  //     webResponse::flagsAddr += BuffSize;
-  //     offset += BuffSize;
-  //     sum += BuffSize;
-  //     length -= BuffSize;
-  //     webResponse::count_++;
-  //     webResponse::flagsAddr =
-  //     (char*)mmap(webResponse::flagsAddr,BuffSize,PROT_READ,MAP_PRIVATE,fd,offset);
-  //     assert(webResponse::flagsAddr != MAP_FAILED);
-
-  //     std::cout << length << std::endl;
-  // }
   webResponse::fileAddr =
       (char*)mmap(NULL, st_.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
   assert(webResponse::fileAddr != MAP_FAILED);
   ::close(fd);
-  // contentLength = st_.st_size;
   return FileRequest;
 }
 webRequest::HttpCode webRequest::eventProcess(FastCGI& fastcgi) {
@@ -227,7 +185,6 @@ webRequest::HttpCode webRequest::eventProcess(FastCGI& fastcgi) {
   while (((checkstate_ == CheckStateContent) && (linestatus == LineStatusOk)) ||
          ((linestatus = parseLine()) == LineStatusOk)) {
     cout << "Coming in eventProcess" << std::endl;
-    // requeseBuffer_ = buffer_.retrieveAllAsString();
     startLine_ = buffer_.getDateBegin(-1);
     std::cout << "The date in Readbuffer: " << requeseBuffer_ << std::endl;
     switch (checkstate_) {

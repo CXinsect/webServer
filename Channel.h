@@ -64,7 +64,5 @@ class Channel {
   EventCallBack closeCallBack_;
   EventCallBack forceCallBack_;
   bool eventHanding_;
-  bool tied_;
-  boost::weak_ptr<void> tie_;
 };
 #endif

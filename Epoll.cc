@@ -39,7 +39,6 @@ void _Poller::Poller::updateChannel(Channel* channel) {
         if(channel->isNoneEvent()) {
             Channel* tmp = static_cast<Channel*>(efd.data.ptr);
             int tfd = channel->getFd();
-            // tmp->setFd(-tfd-1);
         }
         assert(epoll_ctl(epollfd_,EPOLL_CTL_MOD,channel->getFd(),&efd) != -1);
 

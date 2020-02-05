@@ -12,7 +12,7 @@ class Channel;
 using namespace std;
 
 class TcpConnection : 
-            public boost::enable_shared_from_this<TcpConnection>
+            public std::enable_shared_from_this<TcpConnection>
 {
     public:     
         TcpConnection(EventLoop *loop,const std::string name,int sockfd,
@@ -25,9 +25,6 @@ class TcpConnection :
         }
         void setCloseCallBack(const CloseCallBack &cb) {
             closeCallBack_ = cb;
-        }
-        void setForceCallBack (const CloseCallBack& cb) {
-            forceCloseCallBack_ = cb;
         }
         void setContext (boost::any const& context) {
             context_ = context;
@@ -53,15 +50,14 @@ class TcpConnection :
             request_ = request;
         }
         std::shared_ptr<webRequest> getRequest()  { return request_; }
-        void test() { cout << "error excuse" << strerror(errno) << endl; }
     private:
         enum State { Connecting,Connected,Disconnceted};
         EventLoop *loop_;
         bool reading_;
         std::string name_;
         State state_;
-        boost::scoped_ptr<Socket> socket_;
-        boost::scoped_ptr<Channel> channel_;
+        std::unique_ptr<Socket> socket_;
+        std::unique_ptr<Channel> channel_;
         Address localAddr_;
         Address peerAddr_;
         ConnectionCallBack connectionCallBack_;
@@ -79,8 +75,6 @@ class TcpConnection :
         void sendInLoop(const std::string& message);
         // void Shutdown();
         void shutdownInLoop();
-        void startReadInLoop();
-        void stopReadInLoop();
         
 
       
