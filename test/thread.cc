@@ -1,6 +1,6 @@
 #include <iostream>
 #include <thread>
-#include "../EventLoop.h"
+#include "../src/EventLoop.h"
 void threadFunc() {
     EventLoop loop;
     loop.loop();
@@ -11,7 +11,6 @@ void threadFunc2() {
 }
 void EventLoop::loop() {
     assert(!looping_);
-    assertInLoopThread();
     looping_ = true;
     ::poll(NULL,0,3*1000);
     looping_ = false;

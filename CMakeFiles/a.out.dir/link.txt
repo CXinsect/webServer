@@ -1,0 +1,1 @@
+/usr/bin/c++   -g  -rdynamic CMakeFiles/a.out.dir/web.cc.o  -o a.out src/libSource.a -pthread 
