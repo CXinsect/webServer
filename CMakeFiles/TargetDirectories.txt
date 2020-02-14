@@ -1,6 +1,0 @@
-/home/insect/code/MeetingCode/webServer_2.0/CMakeFiles/rebuild_cache.dir
-/home/insect/code/MeetingCode/webServer_2.0/CMakeFiles/a.out.dir
-/home/insect/code/MeetingCode/webServer_2.0/CMakeFiles/edit_cache.dir
-/home/insect/code/MeetingCode/webServer_2.0/src/CMakeFiles/rebuild_cache.dir
-/home/insect/code/MeetingCode/webServer_2.0/src/CMakeFiles/Source.dir
-/home/insect/code/MeetingCode/webServer_2.0/src/CMakeFiles/edit_cache.dir

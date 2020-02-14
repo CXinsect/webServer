@@ -1,1 +1,0 @@
-/usr/bin/c++    -rdynamic CMakeFiles/Server.dir/web.cc.o  -o Server src/libSource.a -pthread 
