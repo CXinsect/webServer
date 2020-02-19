@@ -1,7 +1,8 @@
-#include "modelHead.h"
-
 #include "FastCGI.h"
-#include<iostream>
+
+#include <iostream>
+
+#include "modelHead.h"
 
 static const int PARAMS_BUFF_LEN = 2048;   //环境参数buffer的大小
 static const int CONTENT_BUFF_LEN = 2048;  //内容buffer的大小
@@ -12,9 +13,7 @@ void FastCGI::FastCgi_init() {
   c->requestId_ = 0;  //用来标志当前读取内容是否为html内容
 }
 
-void FastCGI::setRequestId(int requestId) {
-  c->requestId_ = requestId;
-}
+void FastCGI::setRequestId(int requestId) { c->requestId_ = requestId; }
 
 // FCGI_Header makeHeader(int type, int requestId, int contentLength,
 //                        int paddingLength) { }
@@ -119,7 +118,7 @@ int FastCGI::sendStartRequestRecord() {
 
 int FastCGI::sendParams(char *name, char *value) {
   int rc;
-  
+
   unsigned char bodyBuff[PARAMS_BUFF_LEN];
 
   bzero(bodyBuff, sizeof(bodyBuff));
@@ -162,7 +161,7 @@ int FastCGI::sendEndRequestRecord() {
 
 char *FastCGI::readFromPhp() {
   FCGI_Header responderHeader;
-  char *content = (char*)malloc(sizeof(char)* CONTENT_BUFF_LEN);
+  char *content = (char *)malloc(sizeof(char) * CONTENT_BUFF_LEN);
   int contentLen;
   char tmp[8];  //用来暂存padding字节
   int ret;

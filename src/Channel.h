@@ -1,8 +1,9 @@
 #ifndef _EVENTLOOP_H_
 #define _EVENTLOOP_H_
 
-#include "modelHead.h"
 #include <functional>
+
+#include "modelHead.h"
 
 class EventLoop;
 
@@ -17,9 +18,9 @@ class Channel {
   void setWriteCallBack(const EventCallBack &cb) { writeCallBack_ = cb; }
   void setErrCallBack(const EventCallBack &cb) { errCallBack_ = cb; }
   void setCloseCallBack(const EventCallBack &cb) { closeCallBack_ = cb; }
-  void setForceCloseCallBack(const EventCallBack& cb) { forceCallBack_ = cb; }
-  int getFd () { return fd_; }
-  void setFd (int fd) { fd_ = fd; }
+  void setForceCloseCallBack(const EventCallBack &cb) { forceCallBack_ = cb; }
+  int getFd() { return fd_; }
+  void setFd(int fd) { fd_ = fd; }
   int getEvents() const { return events_; }
   void setRevents(int revt) { revents_ = revt; }
   bool isNoneEvent() const { return events_ == NoneEvent; }
@@ -45,7 +46,7 @@ class Channel {
   void setIndex(int id) { index_ = id; }
   EventLoop *owerLoop() { return loop_; }
   void remove(void);
-  void tie(const std::shared_ptr<void>&);
+  void tie(const std::shared_ptr<void> &);
   ~Channel();
 
  private:

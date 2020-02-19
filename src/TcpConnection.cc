@@ -1,23 +1,23 @@
 #include "TcpConnection.h"
-#include "Channel.h"
-#include "Socket.h"
-#include "EventLoop.h"
 
-TcpConnection::TcpConnection(EventLoop *loop,const std::string name,int sockfd,
-                              const Address &localAddr,const Address &peerAddr) 
-                        :loop_(loop),
-                        reading_(false),
-                        name_(name),
-                        socket_(new Socket(sockfd)),
-                        channel_(new Channel(loop,sockfd)),
-                        localAddr_(localAddr),
-                        peerAddr_(peerAddr) 
-{
-    channel_->setReadCallBack(
-        std::bind(&TcpConnection::handleRead,this));
-    channel_->setWriteCallBack(std::bind(&TcpConnection::handWrite,this));
-    channel_->setCloseCallBack(std::bind(&TcpConnection::handClose,this));
-    channel_->setErrCallBack(std::bind(&TcpConnection::handClose,this));
+#include "Channel.h"
+#include "EventLoop.h"
+#include "Socket.h"
+
+TcpConnection::TcpConnection(EventLoop* loop, const std::string name,
+                             int sockfd, const Address& localAddr,
+                             const Address& peerAddr)
+    : loop_(loop),
+      reading_(false),
+      name_(name),
+      socket_(new Socket(sockfd)),
+      channel_(new Channel(loop, sockfd)),
+      localAddr_(localAddr),
+      peerAddr_(peerAddr) {
+  channel_->setReadCallBack(std::bind(&TcpConnection::handleRead, this));
+  channel_->setWriteCallBack(std::bind(&TcpConnection::handWrite, this));
+  channel_->setCloseCallBack(std::bind(&TcpConnection::handClose, this));
+  channel_->setErrCallBack(std::bind(&TcpConnection::handClose, this));
 }
 void TcpConnection::handleRead() {
   loop_->assertNotInLoopThread();
@@ -28,7 +28,7 @@ void TcpConnection::handleRead() {
     messageCallBack_(shared_from_this(), &inputBuffer_);
   } else if (n == 0) {
     std::cout << "client is over" << std::endl;
-    handClose();
+    connectionClose();
   } else {
     std::cout << "TcpConnection Error:: handRead" << std::endl;
   }
@@ -39,12 +39,12 @@ void TcpConnection::handWrite() {
     std::cout << "writeing" << std::endl;
     ssize_t n = ::write(channel_->getFd(), outputBuffer_.peek(),
                         outputBuffer_.getReadableBytes());
-    std::cout << "writing Bytes: " << n <<std::endl;
+    std::cout << "writing Bytes: " << n << std::endl;
     if (n > 0) {
       outputBuffer_.retrieve(n);
       if (outputBuffer_.getReadableBytes() == 0) {
         channel_->disableWriteing();
-        if(state_ == Connected) Close();
+        // if (state_ == Connected) Close();
       }
     }
   } else {
@@ -63,7 +63,7 @@ void TcpConnection::handError() {
 }
 void TcpConnection::connectionClose() {
   loop_->assertNotInLoopThread();
-  assert(state_ == Connected);
+  // assert(state_ == Connected);
   setState(Disconnceted);
   channel_->disableAll();
   connectionCallBack_(shared_from_this());
@@ -106,14 +106,15 @@ void TcpConnection::sendInLoop(const std::string& message) {
 void TcpConnection::Close() {
   if (state_ == Connected) {
     setState(Disconnceted);
-     loop_->runInLoop(std::bind(&TcpConnection::safeClose,this));
+    loop_->runInLoop(std::bind(&TcpConnection::safeClose, this));
   }
 }
 void TcpConnection::safeClose() {
   loop_->assertNotInLoopThread();
-  if(!channel_->isWriteing()) close(channel_->getFd());
+  if (!channel_->isWriteing()) close(channel_->getFd());
 }
 void TcpConnection::connectEstablished() {
+  cout << "established------" << endl;
   loop_->assertNotInLoopThread();
   setState(Connected);
   channel_->tie(shared_from_this());

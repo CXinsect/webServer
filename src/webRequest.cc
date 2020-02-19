@@ -29,7 +29,7 @@ webRequest::LineStatus webRequest::parseLine() {
   }
   return LineStatusOpen;
 }
-webRequest::HttpCode webRequest::parseRequestLine(std::string& text) {
+webRequest::HttpCode webRequest::parseRequestLine(std::string &text) {
   int pos = text.find_first_of(" \t");
   std::string method = text.substr(0, pos);
   std::cout << "webRequest::method " << method << std::endl;
@@ -51,7 +51,7 @@ webRequest::HttpCode webRequest::parseRequestLine(std::string& text) {
   version_ = version_.substr(0, 8);
   text = text.substr(8 + 2, text.size());
   if (version_.size() == 0) return BadRequest;
-  if (version_ != "HTTP/1.1") return BadRequest;
+  if (version_ != "HTTP/1.0") return BadRequest;
   if (strncasecmp(url_.c_str(), "http://", 7) == 0) {
     url_ = url_.substr(6, url_.size());
   }
@@ -60,7 +60,7 @@ webRequest::HttpCode webRequest::parseRequestLine(std::string& text) {
 
   return NoRequest;
 }
-webRequest::HttpCode webRequest::parseHeader(std::string& text) {
+webRequest::HttpCode webRequest::parseHeader(std::string &text) {
   int position;
   if (text[0] == '0') {
     if (contentLength_ != 0) {
@@ -70,10 +70,10 @@ webRequest::HttpCode webRequest::parseHeader(std::string& text) {
     return GetRequest;
   }
   if ((position = text.find("Host:")) != std::string::npos) {
-    text = text.substr(position+5, text.size());
+    text = text.substr(position + 5, text.size());
     int pos = text.find_first_not_of(' ');
-    int pos2 = text.find("Connection");
-    std::string tmp = text.substr(pos, pos2 - 3);
+    int pos2 = text.find("\r\n");
+    std::string tmp = text.substr(pos, pos2);
     text = text.substr(pos2, text.size());
     host_ = tmp;
 
@@ -90,7 +90,7 @@ webRequest::HttpCode webRequest::parseHeader(std::string& text) {
     std::cout << "Post::Content-Length: " << contentLength_ << std::endl;
   }
   if ((position = text.find("Connection:")) != std::string::npos) {
-    text = text.substr(position+11, text.size());
+    text = text.substr(position + 11, text.size());
     int pos = text.find_first_not_of(' ');
     std::string tmpcontent = text.substr(pos, pos + 9);
     text = text.substr(pos + 12, text.size());
@@ -101,7 +101,7 @@ webRequest::HttpCode webRequest::parseHeader(std::string& text) {
   checkstate_ = CheckStateContent;
   return NoRequest;
 }
-webRequest::HttpCode webRequest::parseContext(std::string& text) {
+webRequest::HttpCode webRequest::parseContext(std::string &text) {
   if (buffer_.getReadableBytes() == 0) {
     std::cout << "处理body" << std::endl;
     int pos = text.find_last_of('\n');
@@ -128,28 +128,29 @@ webRequest::HttpCode webRequest::requestAction() {
     fastcgi_.sendStartRequestRecord();
     std::cout << "test" << fastcgi_.getSockfd() << std::endl;
     std::cout << "cgiUrl_" << cgiUrl_ << std::endl;
-    fastcgi_.sendParams(const_cast<char*>("SCRIPT_FILENAME"),
-                        const_cast<char*>(cgiUrl_.c_str()));
-    fastcgi_.sendParams(const_cast<char*>("REQUEST_METHOD"),
-                        const_cast<char*>(methodcgi.c_str()));
+    fastcgi_.sendParams(const_cast<char *>("SCRIPT_FILENAME"),
+                        const_cast<char *>(cgiUrl_.c_str()));
+    fastcgi_.sendParams(const_cast<char *>("REQUEST_METHOD"),
+                        const_cast<char *>(methodcgi.c_str()));
     if (methodcgi == "GET")
-      fastcgi_.sendParams(const_cast<char*>("CONTENT_LENGTH"),
-                          const_cast<char*>("0"));
+      fastcgi_.sendParams(const_cast<char *>("CONTENT_LENGTH"),
+                          const_cast<char *>("0"));
     else
-      fastcgi_.sendParams(const_cast<char*>("CONTENT_LENGTH"),
-                          const_cast<char*>(contentlen_.c_str()));
-    fastcgi_.sendParams(const_cast<char*>("CONTENT_TYPE"),
-                        const_cast<char*>("application/x-www-form-urlencoded"));
+      fastcgi_.sendParams(const_cast<char *>("CONTENT_LENGTH"),
+                          const_cast<char *>(contentlen_.c_str()));
+    fastcgi_.sendParams(
+        const_cast<char *>("CONTENT_TYPE"),
+        const_cast<char *>("application/x-www-form-urlencoded"));
     if (methodcgi == "GET")
-      fastcgi_.sendParams(const_cast<char*>("QUERY_STRING"),
-                          const_cast<char*>(cgiGetMessage_.c_str()));
+      fastcgi_.sendParams(const_cast<char *>("QUERY_STRING"),
+                          const_cast<char *>(cgiGetMessage_.c_str()));
     fastcgi_.sendEndRequestRecord();
     if (contentLength_ != 0) {
       FCGI_Header begin = fastcgi_.makeHeader(
           FCGI_STDIN, fastcgi_.getrequestId(), contentLength_, 0);
       int ret = send(fastcgi_.getSockfd(), &begin, sizeof(begin), 0);
 
-      send(fastcgi_.getSockfd(), const_cast<char*>(contentlen_.c_str()),
+      send(fastcgi_.getSockfd(), const_cast<char *>(contentlen_.c_str()),
            contentLength_, 0);
       FCGI_Header end =
           fastcgi_.makeHeader(FCGI_STDIN, fastcgi_.getrequestId(), 0, 0);
@@ -169,12 +170,12 @@ webRequest::HttpCode webRequest::requestAction() {
   int fd = open(filePath.c_str(), O_RDONLY);
   assert(fd != -1);
   webResponse::fileAddr =
-      (char*)mmap(NULL, st_.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+      (char *)mmap(NULL, st_.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
   assert(webResponse::fileAddr != MAP_FAILED);
   ::close(fd);
   return FileRequest;
 }
-webRequest::HttpCode webRequest::eventProcess(FastCGI& fastcgi) {
+webRequest::HttpCode webRequest::eventProcess(FastCGI &fastcgi) {
   LineStatus linestatus = LineStatusOk;
   disCription::HttpCode httpcode = NoRequest;
   std::string text = std::string();

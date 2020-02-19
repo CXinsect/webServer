@@ -1,7 +1,8 @@
 #include "Acceptor.h"
-#include "SocketOpts.h"
+
 #include "Address.h"
 #include "EventLoop.h"
+#include "SocketOpts.h"
 
 using namespace sockets;
 
@@ -28,6 +29,6 @@ void Acceptor::handleRead() {
   if (newConnectionBack_)
     newConnectionBack_(confd, perrAddr);
   else {
-    sockets::close(confd);
+    ::close(confd);
   }
 }

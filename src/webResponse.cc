@@ -8,11 +8,12 @@ char *webResponse::flagsAddr = NULL;
 int webResponse::count_ = 0;
 int webResponse::tail_ = 0;
 
-void webResponse::fileResponseAddHead(unique_ptr<Buffer>&buffer_, int length_) {
+void webResponse::fileResponseAddHead(unique_ptr<Buffer> &buffer_,
+                                      int length_) {
   memset(buf_, 0, sizeof(buf_));
   snprintf(buf_, sizeof(buf_), "Content-Type: %s\r\n", getFileType().c_str());
   buffer_->Append(buf_, strlen(buf_));
-  filename_.erase(0,filename_.size());
+  filename_.erase(0, filename_.size());
   memset(buf_, 0, sizeof(buf_));
   snprintf(buf_, sizeof(buf_), "Content-Length: %d\r\n", length_);
   buffer_->Append(buf_, strlen(buf_));
@@ -24,7 +25,8 @@ void webResponse::fileResponseAddHead(unique_ptr<Buffer>&buffer_, int length_) {
   snprintf(buf_, sizeof(buf_), "\r\n");
   buffer_->Append(buf_, strlen(buf_));
 }
-void webResponse::fileResponseAddHead(unique_ptr<Buffer>&buffer_, std::string &cgiReply_) {
+void webResponse::fileResponseAddHead(unique_ptr<Buffer> &buffer_,
+                                      std::string &cgiReply_) {
   int position;
   memset(buf_, 0, sizeof(buf_));
   if ((position = cgiReply_.find("Status:")) != std::string::npos) {
@@ -32,8 +34,8 @@ void webResponse::fileResponseAddHead(unique_ptr<Buffer>&buffer_, std::string &c
     int pos = cgiReply_.find_first_not_of(" ");
     cgiStatus_ = cgiReply_.substr(pos, 3);
   }
-  snprintf(buf_, sizeof(buf_), "%s %d %s\r\n", Version.c_str(),
-           200, "discription");
+  snprintf(buf_, sizeof(buf_), "%s %d %s\r\n", Version.c_str(), 200,
+           "discription");
   buffer_->Append(buf_, strlen(buf_));
   memset(buf_, 0, sizeof(buf_));
   if ((position = cgiReply_.find("Content-type:")) != std::string::npos) {
@@ -55,7 +57,7 @@ void webResponse::fileResponseAddHead(unique_ptr<Buffer>&buffer_, std::string &c
     buffer_->Append(buf_, strlen(buf_));
   }
 }
-bool webResponse::fileResponseAssembly(unique_ptr<Buffer>&buffer_) {
+bool webResponse::fileResponseAssembly(unique_ptr<Buffer> &buffer_) {
   std::cout << "fileresponse " << std::endl;
   switch (httpcodestatus_) {
     case InternalError: {
@@ -101,7 +103,7 @@ bool webResponse::fileResponseAssembly(unique_ptr<Buffer>&buffer_) {
           std::cout << " FastCGI回复 :" << cgiReply_ << std::endl;
           fileResponseAddHead(buffer_, cgiReply_);
           buffer_->Append(cgiContent_.c_str(), cgiContent_.size());
-          cgiReply_.erase(0,cgiReply_.size());
+          cgiReply_.erase(0, cgiReply_.size());
 
           break;
         }

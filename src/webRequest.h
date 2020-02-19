@@ -1,18 +1,19 @@
 #ifndef _REQUEST_H_
 #define _REQUEST_H_
 
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#include <iostream>
+#include <string>
+
 #include "FastCGI.h"
 #include "TcpConnection.h"
 #include "TcpServer.h"
 #include "disCription.h"
 #include "webResponse.h"
-
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <iostream>
-#include <string>
 
 class webRequest : public disCription {
  public:
@@ -26,15 +27,15 @@ class webRequest : public disCription {
         host_(std::string()),
         messageLength_(0) {}
 
-  void setBuffer(Buffer& buffer) {
+  void setBuffer(Buffer &buffer) {
     buffer_ = buffer;
     requeseBuffer_ = buffer_.retrieveAllAsString();
   }
   LineStatus parseLine();
-  HttpCode parseRequestLine(std::string& text);
-  HttpCode parseHeader(std::string& text);
-  HttpCode parseContext(std::string& text);
-  HttpCode eventProcess(FastCGI& fastcgi);
+  HttpCode parseRequestLine(std::string &text);
+  HttpCode parseHeader(std::string &text);
+  HttpCode parseContext(std::string &text);
+  HttpCode eventProcess(FastCGI &fastcgi);
   HttpCode requestAction();
   void fileRequestRead();
 

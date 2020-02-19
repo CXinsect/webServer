@@ -99,8 +99,9 @@ class FastCGI {
  public:
   FastCGI() { c = new FastCgi_t; }
   ~FastCGI() {
-
-    if (c != NULL) { delete c;}
+    if (c != NULL) {
+      delete c;
+    }
   }
   // FastCGI的初始化
   void FastCgi_init();
