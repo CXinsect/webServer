@@ -53,6 +53,7 @@
       ![](https://github.com/CXinsect/webServer/blob/master/images/server100c10.png)
    
 - 绘制成图表如下
+ 
  ![](https://github.com/CXinsect/webServer/blob/master/images/servercompare.png)
  
 ### 安装和运行
