@@ -14,21 +14,46 @@
 
 ### 运行环境
  ![](https://github.com/CXinsect/webServer/blob/master/images/hardware.png)
-### 测试与反思
+### 性能测试
  - WebBench的使用
  ```
  webbench -c 客户端数 -t 时间　http://127.0.0.1:8888/home/insect/
  ```
  - 使用WebBench的测试结果：
- ![](https://github.com/CXinsect/webServer/blob/master/images/server1c5.png)
- ![](https://github.com/CXinsect/webServer/blob/master/images/server2c10.png)
- ![](https://github.com/CXinsect/webServer/blob/master/images/server3c15.png)
- ![](https://github.com/CXinsect/webServer/blob/master/images/server4c20.png)
- 
- - 反思
-   - 随着客户端数量的增加，服务器处理请求的数量也随之增加，但是每次增长的幅度并不是很大，主要原因在于服务端所采用的编程模型。主线程只负责建立新连接，
-  但是连接上事件的处理则交由线程去处理，每处理一个请求的同时需要创建一个对象来管理事件，这样带来的开销对于短连接来说并不划算，系统的资源会部分的浪费在
-  对象的创建上，这导致了连接的响应在一定程度上有所延迟，最终导致了性能瓶颈。
+   - one client
+   
+       Appache: 
+       ![](https://github.com/CXinsect/webServer/blob/master/images/appache1c10.png)
+       
+       Server:
+       ![](https://github.com/CXinsect/webServer/blob/master/images/server1c10.png)
+   
+   - two clients
+   
+      Appache:
+      ![](https://github.com/CXinsect/webServer/blob/master/images/appache4c10.png)
+    
+      Server:
+      ![](https://github.com/CXinsect/webServer/blob/master/images/server4c10.png)
+   
+   - eight clients
+   
+      Appache:
+      ![](https://github.com/CXinsect/webServer/blob/master/images/appache100c10.png)
+      
+      Server:
+      ![](https://github.com/CXinsect/webServer/blob/master/images/server8c10.png)
+    
+   - 100 clients
+   
+      Appache:
+      ![](https://github.com/CXinsect/webServer/blob/master/images/http100c10.png)
+    
+      Server:
+      ![](https://github.com/CXinsect/webServer/blob/master/images/server100c10.png)
+   
+- 绘制成图表如下
+ ![](https://github.com/CXinsect/webServer/blob/master/images/servercompare.png)
  
 ### 安装和运行
  运行前请安装cmake 1.5以上版本
