@@ -62,11 +62,9 @@
   redHat: sudo yum install cmake
   Arch  : sudo pacman -S cmake
  
-  mkdir build
-  cd build
   cmake .
   make
-  ./Server
+  ./a.out
  ```
  
  
