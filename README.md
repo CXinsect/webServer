@@ -22,7 +22,7 @@
  - 使用WebBench的测试结果：
    - one client
    
-       Appache: 
+       Apache: 
        ![](https://github.com/CXinsect/webServer/blob/master/images/appache1c10.png)
        
        Server:
@@ -30,7 +30,7 @@
    
    - two clients
    
-      Appache:
+      Apache:
       ![](https://github.com/CXinsect/webServer/blob/master/images/appache4c10.png)
     
       Server:
@@ -38,7 +38,7 @@
    
    - eight clients
    
-      Appache:
+      Apache:
       ![](https://github.com/CXinsect/webServer/blob/master/images/appache100c10.png)
       
       Server:
@@ -46,7 +46,7 @@
     
    - 100 clients
    
-      Appache:
+      Apache:
       ![](https://github.com/CXinsect/webServer/blob/master/images/http100c10.png)
     
       Server:
