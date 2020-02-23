@@ -12,8 +12,8 @@
 #include "TcpServer.h"
 #include "disCription.h"
 #include "modelHead.h"
-#include "webRequest.h"
-#include "webResponse.h"
+#include "WebRequest.h"
+#include "WebResponse.h"
 
 class ThreadPool;
 

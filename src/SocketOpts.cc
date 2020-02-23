@@ -9,7 +9,7 @@ void sockets::myError(const char *err_string, int line) {
 }
 int sockets::creatNonblocking(sa_family_t family) {
   int sockfd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
-  std::cout << sockfd << std::endl;
+  // std::cout << sockfd << std::endl;
   if (sockfd < 0) {
     myError("socket", __LINE__);
   }

@@ -4,12 +4,11 @@
 #include "Address.h"
 #include "SocketOpts.h"
 #include "TcpConnection.h"
-#include "threadLoopPool.h"
+#include "ThreadLoopPool.h"
 
 using namespace placeholders;
 
 void defaultConnectionCallback(const TcpConnectionPtr& conn) {
-  std::cout << "Connected" << std::endl;
 }
 extern void defaultMessageCallback(const TcpConnectionPtr& conn, Buffer* buf) {
   buf->retrieveAllBytes();
@@ -32,8 +31,6 @@ void TcpServer::newConnection(int sockfd, const Address& peerAddr) {
   snprintf(buf, sizeof(buf), "#%d", nextConfd_);
   ++nextConfd_;
   std::string name = name_ + buf;
-  std::cout << "TcpServer::New Connection: " << name_ << "from "
-            << peerAddr.toIpPort().c_str() << std::endl;
   Address localAddr(sockets::getLocalAddr(sockfd));
   EventLoop* t = threadLoopPool_->getNextloop();
   TcpConnectionPtr conn(
@@ -45,7 +42,6 @@ void TcpServer::newConnection(int sockfd, const Address& peerAddr) {
   t->runInLoop(bind(&TcpConnection::connectEstablished, conn));
 }
 void TcpServer::removeConnection(const TcpConnectionPtr& conn) {
-  std::cout << "removeConnection: " << name_ << std::endl;
   loop_->runInLoop(bind(&TcpServer::removeConnectionInLoop, this, conn));
 }
 
@@ -65,7 +61,6 @@ void TcpServer::start() {
   loop_->runInLoop(bind(&Acceptor::Listen, acceptor_.get()));
 }
 TcpServer::~TcpServer() {
-  std::cout << "TcpServer close: " << name_ << std::endl;
   for (auto& item : connection_) {
     TcpConnectionPtr conn(item.second);
     item.second.reset();

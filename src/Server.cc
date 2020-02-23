@@ -15,7 +15,7 @@ Server::Server(EventLoop *loop, const Address &listenAddr, const string &name)
 Server::~Server() {}
 void Server::onConnection(const TcpConnectionPtr &conn) {
   if (conn->isConnected()) {
-    std::cout << "New Connection " << conn->getName() << std::endl;
+    // std::cout << "New Connection " << conn->getName() << std::endl;
     std::shared_ptr<webRequest> ptr_(new webRequest);
     conn->setRequest(ptr_);
   }
@@ -23,7 +23,7 @@ void Server::onConnection(const TcpConnectionPtr &conn) {
 void Server::onMessage(const TcpConnectionPtr &conn, Buffer *buf) {
   std::shared_ptr<webRequest> request_ = conn->getRequest();
   request_->setBuffer(*buf);
-  std::cout << "bufer::onMessage " << buf->retrieveAllAsString() << std::endl;
+  // std::cout << "bufer::onMessage " << buf->retrieveAllAsString() << std::endl;
   disCription::HttpCode ret = request_->eventProcess(fastcgi_);
   onRequest(conn, ret, fastcgi_);
 }

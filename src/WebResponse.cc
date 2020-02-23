@@ -1,4 +1,4 @@
-#include "webResponse.h"
+#include "WebResponse.h"
 struct stat disCription::st_;
 std::string disCription::filename_ = std::string();
 std::string disCription::cgiReply_ = std::string();
@@ -58,7 +58,6 @@ void webResponse::fileResponseAddHead(unique_ptr<Buffer> &buffer_,
   }
 }
 bool webResponse::fileResponseAssembly(unique_ptr<Buffer> &buffer_) {
-  std::cout << "fileresponse " << std::endl;
   switch (httpcodestatus_) {
     case InternalError: {
       memset(buf_, 0, sizeof(buf_));
@@ -98,9 +97,8 @@ bool webResponse::fileResponseAssembly(unique_ptr<Buffer> &buffer_) {
     }
     case FileRequest: {
       do {
-        std::cout << "FileRequest" << std::endl;
         if (cgiReply_.size() != 0) {
-          std::cout << " FastCGI回复 :" << cgiReply_ << std::endl;
+          // std::cout << " FastCGI回复 :" << cgiReply_ << std::endl;
           fileResponseAddHead(buffer_, cgiReply_);
           buffer_->Append(cgiContent_.c_str(), cgiContent_.size());
           cgiReply_.erase(0, cgiReply_.size());
@@ -127,7 +125,7 @@ bool webResponse::fileResponseAssembly(unique_ptr<Buffer> &buffer_) {
       return true;
     }
     default: {
-      std::cout << "webResponse::fileresponse Unknown option" << std::endl;
+      // std::cout << "webResponse::fileresponse Unknown option" << std::endl;
       return false;
     }
   }

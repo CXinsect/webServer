@@ -1,5 +1,5 @@
-#include "currentThread.h"
-
+#include "CurrentThread.h"
+//The way in judging thread from chenshuo
 #include <cxxabi.h>
 #include <execinfo.h>
 #include <stdlib.h>

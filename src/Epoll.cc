@@ -6,7 +6,7 @@
 void _Poller::Poller::fillActiveChannels(int numEvents,
                                          channelList* activeChannels) const {
   assert(numEvents <= events_.size());
-  std::cout << "Coming Epoll" << std::endl;
+  // std::cout << "Coming Epoll" << std::endl;
   for (int i = 0; i < numEvents; i++) {
     Channel* channel = static_cast<Channel*>(events_[i].data.ptr);
     int fd = channel->getFd();
@@ -73,7 +73,7 @@ void _Poller::Poller::removeChannel(Channel* channel) {
   }
   assert(epoll_ctl(epollfd_, EPOLL_CTL_DEL, channel->getFd(),
                    const_cast<epoll_event*>(&efd)) != -1);
-  cout << "delete--------------" << endl;
+  // cout << "delete--------------" << endl;
   close(channel->getFd());
 }
 

@@ -13,7 +13,7 @@
 #include "TcpConnection.h"
 #include "TcpServer.h"
 #include "disCription.h"
-#include "webResponse.h"
+#include "WebResponse.h"
 
 class webRequest : public disCription {
  public:

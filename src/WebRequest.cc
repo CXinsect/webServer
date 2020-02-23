@@ -1,10 +1,9 @@
-#include "webRequest.h"
+#include "WebRequest.h"
 class FastCGI;
 
 webRequest::LineStatus webRequest::parseLine() {
   char temp;
   checkIndex_ = buffer_.getDateBegin(-1);
-  std::cout << "RequestBuffer: " << requeseBuffer_.size() << std::endl;
   assert(requeseBuffer_.size() != 0);
   messageLength_ = requeseBuffer_.size() + 1;
   for (; checkIndex_ < messageLength_; checkIndex_++) {
@@ -32,7 +31,6 @@ webRequest::LineStatus webRequest::parseLine() {
 webRequest::HttpCode webRequest::parseRequestLine(std::string &text) {
   int pos = text.find_first_of(" \t");
   std::string method = text.substr(0, pos);
-  std::cout << "webRequest::method " << method << std::endl;
   methodcgi = method.substr(0, method.size());
   if (method == "GET") {
     method_ = GET;
@@ -76,8 +74,6 @@ webRequest::HttpCode webRequest::parseHeader(std::string &text) {
     std::string tmp = text.substr(pos, pos2);
     text = text.substr(pos2, text.size());
     host_ = tmp;
-
-    std::cout << "Request::host_: " << host_ << std::endl;
   }
   if ((position = text.find("Content-Length:")) != std::string::npos) {
     text = text.substr(position + 15, text.size());
@@ -87,7 +83,6 @@ webRequest::HttpCode webRequest::parseHeader(std::string &text) {
     text = text.substr(pos2 + 2, text.size());
     contentlen_ = tmpcontent;
     contentLength_ = atol(tmpcontent.c_str());
-    std::cout << "Post::Content-Length: " << contentLength_ << std::endl;
   }
   if ((position = text.find("Connection:")) != std::string::npos) {
     text = text.substr(position + 11, text.size());
@@ -95,15 +90,12 @@ webRequest::HttpCode webRequest::parseHeader(std::string &text) {
     std::string tmpcontent = text.substr(pos, pos + 9);
     text = text.substr(pos + 12, text.size());
     if (strcasecmp(tmpcontent.c_str(), "keep-alive") == 0) link_ = true;
-  } else {
-    std::cout << "Temporarily unprocessed" << std::endl;
   }
   checkstate_ = CheckStateContent;
   return NoRequest;
 }
 webRequest::HttpCode webRequest::parseContext(std::string &text) {
   if (buffer_.getReadableBytes() == 0) {
-    std::cout << "处理body" << std::endl;
     int pos = text.find_last_of('\n');
     postContent_ = text.substr(pos + 1, text.size());
     return GetRequest;
@@ -120,14 +112,11 @@ webRequest::HttpCode webRequest::requestAction() {
     url_ = url_.substr(0, pos2);
   }
   filename_ = url_.substr(pos + 1, url_.size());
-  std::cout << "Filename: " << filename_ << std::endl;
   if (filename_.find(".php") != string::npos) {
     signal(SIGPIPE, SIG_IGN);
     fastcgi_.setRequestId(1);
     fastcgi_.startConnect();
     fastcgi_.sendStartRequestRecord();
-    std::cout << "test" << fastcgi_.getSockfd() << std::endl;
-    std::cout << "cgiUrl_" << cgiUrl_ << std::endl;
     fastcgi_.sendParams(const_cast<char *>("SCRIPT_FILENAME"),
                         const_cast<char *>(cgiUrl_.c_str()));
     fastcgi_.sendParams(const_cast<char *>("REQUEST_METHOD"),
@@ -158,7 +147,6 @@ webRequest::HttpCode webRequest::requestAction() {
     }
     disCription::cgiReply_ = fastcgi_.readFromPhp();
     fastcgi_.FastCgi_destory();
-    std::cout << "FastCGI has been sent " << cgiGetMessage_ << std::endl;
     return FileRequest;
   }
   if (stat(filePath.c_str(), &st_) < 0) return NoResource;
@@ -182,7 +170,6 @@ webRequest::HttpCode webRequest::eventProcess(FastCGI &fastcgi) {
   fastcgi_ = fastcgi;
   while (((checkstate_ == CheckStateContent) && (linestatus == LineStatusOk)) ||
          ((linestatus = parseLine()) == LineStatusOk)) {
-    cout << "Coming in eventProcess" << std::endl;
     startLine_ = buffer_.getDateBegin(-1);
     switch (checkstate_) {
       case CheckStateRequestLine: {

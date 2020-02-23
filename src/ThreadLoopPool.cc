@@ -1,4 +1,4 @@
-#include "threadLoopPool.h"
+#include "ThreadLoopPool.h"
 
 #include "EventLoop.h"
 
@@ -8,7 +8,7 @@ EventLoop *threadLoop::startLoop() {
     thread_.push_back(thread(&threadLoop::threadFunction, this));
     while (loop_ == NULL) cond_.wait(mylock);
   }
-  cout << "thread:::_____________" << loop_ << endl;
+  // cout << "thread:::_____________" << loop_ << endl;
   return loop_;
 }
 
@@ -38,7 +38,7 @@ EventLoop *threadLoopPool::getNextloop() {
   bloop_->assertNotInLoopThread();
   EventLoop *loop = bloop_;
   if (!loopv_.empty()) {
-    cout << "index--::loop" << endl;
+    // cout << "index--::loop" << endl;
     loop = loopv_[index_++];
     if (index_ >= loopv_.size()) index_ = 0;
   }

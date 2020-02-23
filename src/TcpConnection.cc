@@ -21,13 +21,11 @@ TcpConnection::TcpConnection(EventLoop* loop, const std::string name,
 }
 void TcpConnection::handleRead() {
   loop_->assertNotInLoopThread();
-  std::cout << "TcpConnnection handleread" << std::endl;
   int n = static_cast<int>(inputBuffer_.readFd(channel_->getFd()));
 
   if (n > 0) {
     messageCallBack_(shared_from_this(), &inputBuffer_);
   } else if (n == 0) {
-    std::cout << "client is over" << std::endl;
     connectionClose();
   } else {
     std::cout << "TcpConnection Error:: handRead" << std::endl;
@@ -36,10 +34,8 @@ void TcpConnection::handleRead() {
 void TcpConnection::handWrite() {
   loop_->assertNotInLoopThread();
   if (channel_->isWriteing()) {
-    std::cout << "writeing" << std::endl;
     ssize_t n = ::write(channel_->getFd(), outputBuffer_.peek(),
                         outputBuffer_.getReadableBytes());
-    std::cout << "writing Bytes: " << n << std::endl;
     if (n > 0) {
       outputBuffer_.retrieve(n);
       if (outputBuffer_.getReadableBytes() == 0) {
@@ -52,7 +48,6 @@ void TcpConnection::handWrite() {
   }
 }
 void TcpConnection::handClose() {
-  std::cout << "TcpConnection handclose " << channel_->getFd() << std::endl;
   loop_->assertNotInLoopThread();
   assert(state_ == Connected);
   channel_->disableAll();
@@ -86,12 +81,12 @@ void TcpConnection::sendInLoop(const std::string& message) {
     nwrite = ::write(channel_->getFd(), message.c_str(), message.size());
     if (nwrite >= 0) {
       if (static_cast<size_t>(nwrite) < message.size()) {
-        std::cout << "waiting for be sent " << std::endl;
+        // std::cout << "waiting for be sent " << std::endl;
       }
     } else {
       nwrite = 0;
       if (errno != EWOULDBLOCK) {
-        std::cout << "TcpConnection::sendInLoop: " << std::endl;
+        // std::cout << "TcpConnection::sendInLoop: " << std::endl;
       }
     }
   }
@@ -114,7 +109,7 @@ void TcpConnection::safeClose() {
   if (!channel_->isWriteing()) close(channel_->getFd());
 }
 void TcpConnection::connectEstablished() {
-  cout << "established------" << endl;
+  // cout << "established------" << endl;
   loop_->assertNotInLoopThread();
   setState(Connected);
   channel_->tie(shared_from_this());

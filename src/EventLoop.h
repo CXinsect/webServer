@@ -21,7 +21,7 @@ class EventLoop {
 
   void assertNotInLoopThread() {
     if (!isInLoopThread()) {
-      cout << " not in Loop Thread " << endl;
+      // cout << " not in Loop Thread " << endl;
       abort();
     }
   }

@@ -13,8 +13,7 @@
 ///
 /// The most common stuffs.
 ///
-namespace muduo {
-  
+// The file from chenshuo
 using std::string;
 
 inline void memZero(void* p, size_t n) { memset(p, 0, n); }
@@ -113,6 +112,4 @@ inline To down_cast(From* f)           // so we only accept pointers
   return static_cast<To>(f);
 }
 
-}  // namespace muduo
-
-#endif  // MUDUO_BASE_TYPES_H
+#endif

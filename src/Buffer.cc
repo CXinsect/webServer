@@ -21,7 +21,7 @@ ssize_t Buffer::readFd(int fd) {
   const size_t n = ::readv(fd, iov, 2);
 
   if (static_cast<int>(n) < 0) {
-    std::cout << "Buffer::readFd: " << __LINE__ << std::endl;
+    // std::cout << "Buffer::readFd: " << __LINE__ << std::endl;
   } else if (static_cast<size_t>(n) <= writeAble) {
     writeIndex_ += n;
   } else {

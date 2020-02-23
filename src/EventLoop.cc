@@ -1,7 +1,7 @@
 #include "EventLoop.h"
 
 #include "Channel.h"
-#include "currentThread.h"
+#include "CurrentThread.h"
 
 int createWakeupfd() {
   int efd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
@@ -22,7 +22,7 @@ EventLoop::EventLoop()
       wkChannel_(new Channel(this, wkfd_)),
       threadId_(CurrentThread::tid()) {
   if (loopThisThread) {
-    cout << "not in this loop" << endl;
+    // cout << "not in this loop" << endl;
   } else {
     loopThisThread = this;
   }
@@ -45,7 +45,7 @@ void EventLoop::loop() {
   looping_ = true;
   quit_ = false;
   while (!quit_) {
-    std::cout << "Loop" << std::endl;
+    // std::cout << "Loop" << std::endl;
     activeChannels_.clear();
     poller_->poll(&activeChannels_, -1);
     for (ChannelList::iterator it = activeChannels_.begin();
@@ -54,7 +54,7 @@ void EventLoop::loop() {
     }
     pendingFunctor();
   }
-  std::cout << "Event is going to be Stoped" << std::endl;
+  // std::cout << "Event is going to be Stoped" << std::endl;
   looping_ = false;
 }
 void EventLoop::updateChannel(Channel* channel) {
@@ -97,7 +97,7 @@ void EventLoop::pendingFunctor() {
   callFunctor_ = false;
 }
 void EventLoop::runInLoop(const Functor& cb) {
-  cout << "run in loop" << endl;
+  // cout << "run in loop" << endl;
   if (isInLoopThread())
     cb();
   else

@@ -1,5 +1,5 @@
-#ifndef MUDUO_BASE_CURRENTTHREAD_H
-#define MUDUO_BASE_CURRENTTHREAD_H
+#ifndef _CURRENTTHREAD_H
+#define _CURRENTTHREAD_H
 
 #include "Types.h"
 namespace CurrentThread {
