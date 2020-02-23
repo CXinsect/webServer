@@ -12,6 +12,8 @@
  - 使用**readv**读取输入缓冲区中的数据，减少了当网络中传输大量数据时触发回调的次数。
  - 使用智能指针管理对象的生命周期。避免内存泄露和空闲指针情况的发生。
 
+### 运行环境
+ ![](https://github.com/CXinsect/webServer/blob/master/images/hardware.png)
 ### 测试与反思
  - WebBench的使用
  ```
